@@ -1,0 +1,53 @@
+{% extends 'base_layout.html' %} 
+{% block title %}
+Comment list
+{% endblock title%} 
+{% block navigation-bar %}
+<ul class="navbar-nav">
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'profile' %}">Profile</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'blog_list' %}">Back to Blogs</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'user-logout' %}"> Logout here </a>
+  </li>
+</ul>
+{% endblock navigation-bar %} 
+{% block page_body %} 
+
+
+<div class="container mt-5">
+    <h2 class="mb-4">{{ post }}'s Comments</h2>
+    
+    <a href="{% url 'create_comment' post.pk %}" class="btn btn-primary mb-4">Make Comment</a>
+    
+    <div class="comment-section">
+        {% for comment in comments %}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <strong>{{ comment.user_id }}</strong> said:
+                    </h5>
+                    <p class="card-text">{{ comment.content }}</p>
+                    <p class="card-text">
+                        <small class="text-muted">Posted on {{ comment.date_posted }}</small>
+                    </p>
+                    
+                    {% if comment.user_id == request.user or self.request.user == UserComments.post_id.author  or request.user.is_staff%}
+                        <form action="{% url 'delete_comment' comment.id %}" method="post" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        {% empty %}
+            <div class="alert alert-info" role="alert">
+                No comments yet. Be the first to comment!
+            </div>
+        {% endfor %}
+    </div>
+</div>  
+{% endblock %}

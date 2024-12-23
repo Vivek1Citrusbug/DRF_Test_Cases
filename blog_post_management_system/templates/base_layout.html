@@ -1,0 +1,60 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Home Page{% endblock %}</title>
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    <link rel="stylesheet" href="{% static 'css/base_layout.css' %}">
+  </head>
+
+  <body>
+    <!-- Navigation bar code -->
+    <nav class="navbar navbar-dark navbar-expand-lg  bg-dark">
+      <div class="container">
+        <a class="navbar-brand" href="#">BlogPost</a>
+
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="#">Home</a>
+            </li>
+          </ul>
+          {% block navigation-bar %}
+              <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'user-login' %}">Login</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'user-registration' %}">Register</a>
+              </li>
+            </ul> 
+          {% endblock navigation-bar %}
+          
+        </div>
+      </div>
+    </nav>
+
+    {% block page_body %}
+      <h1 class = 'text-center'>Welcome to homepage</h1>
+    {% endblock  %}
+
+
+    {% bootstrap_javascript %}
+  </body>
+</html>

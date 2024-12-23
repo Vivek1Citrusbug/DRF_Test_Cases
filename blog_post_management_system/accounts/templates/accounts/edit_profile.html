@@ -1,0 +1,44 @@
+{% extends "base_layout.html" %}
+{% block title %}
+    Profile Page
+{% endblock title %}
+{% block navigation-bar %}
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'profile' %}">Back to Profile</a>
+        </li>
+    </ul>
+{% endblock navigation-bar %}
+{% block page_body %}
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Edit Profile</h1>
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Update Your Profile Information</h4>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="id_bio" class="form-label">Bio</label>
+                                <textarea class="form-control" id="id_bio" name="bio" rows="3" >{{ form.bio.value|default_if_none:"" }}</textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="id_profile_picture" class="form-label">Profile Picture</label>
+                                <input class="form-control"
+                                       type="file"
+                                       id="id_profile_picture"
+                                       name="profile_picture">
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock page_body %}

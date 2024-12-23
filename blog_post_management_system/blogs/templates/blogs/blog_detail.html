@@ -1,0 +1,81 @@
+{% extends "base_layout.html" %}
+{% block title %}
+    Blogs
+{% endblock title %}
+{% block navigation-bar %}
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'profile' %}">Profile</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'blog_list' %}">Back to Blogs</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'user-logout' %}">Logout here</a>
+        </li>
+    </ul>
+{% endblock navigation-bar %}
+{% block page_body %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-18">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <!-- Post Title -->
+                        <h1 class="card-title  mb-3">{{ post.title }}</h1>
+                        <!-- Post Content -->
+                        <p class="card-text text-justify">{{ post.content }}</p>
+                        <span class="me-3 float-right"> Likes: <strong>{{ likes_count }}</strong></span>
+                        <br>
+                        <br>
+                        <!-- Author and Date -->
+                        <p class="card-text text-muted">
+                            <span><small>By <strong>{{ post.author }}</strong> | Published on {{ post.date_published }}</small></span>
+                        </p>
+                        <!-- Action Buttons -->
+                        <div class="d-flex justify-content-between align-items-center my-3 ">
+                            {% if post.author == request.user %}
+                                <div class="mr-3">
+                                    <a href="{% url 'blog_edit' post.pk %}" class="btn btn-warning  me-2">
+                                        <i class="bi bi-pencil-square"></i> Edit
+                                    </a>
+                                </div>
+                            {% endif %}
+                            {% if request.user.is_staff or post.author == request.user %}
+                                <div class="mr-3">
+                                    <a href="{% url 'blog_delete' post.pk %}" class="btn btn-danger">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </a>
+                                </div>
+                            {% endif %}
+                            <div class="mr-3">
+                                <a href="{% url 'list_comment' post.pk %}" class="btn btn-primary ">
+                                    <i class="bi bi-chat-left-text"></i> Comments
+                                </a>
+                            </div>
+                            <!-- Back to List Button -->
+                            <div class="text-center">
+                                <a href="{% url 'blog_list' %}" class="btn btn-secondary">
+                                    <i class="bi bi-arrow-left-circle"></i> Back to Blogs
+                                </a>
+                            </div>
+                            <!-- Likes Section -->
+                            <div>
+                                <form action="{% url 'like_post' pk=post.pk %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-outline-primary">
+                                        {% if user_liked %}
+                                            <i class="bi bi-hand-thumbs-down"></i> Unlike
+                                        {% else %}
+                                            <i class="bi bi-hand-thumbs-up"></i> Like
+                                        {% endif %}
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock page_body %}
