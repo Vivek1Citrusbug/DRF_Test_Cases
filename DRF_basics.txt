@@ -1,0 +1,180 @@
+### **REST API Development**
+- A web API built using REST principles is called a REST API.
+
+---
+
+### **Serialization in DRF**
+- **Serialization**: Converts complex data such as querysets and model instances into native Python data types (like JSON, XML) that can be easily rendered and understood by the frontend.
+- A **serializer** is similar to Django's `Form` or `ModelForm` class.
+- Best practice: Create a separate `serializers.py` file to define all serializers.
+
+---
+
+### **JSON Renderer**
+- Converts serialized data into JSON format, which is understandable by the frontend.
+
+---
+
+### **Validation in DRF**
+#### **1. Field-level Validation**
+- Implemented within the serializer using a method like `validate_<fieldname>`.
+- Automatically called when the `is_valid()` method is invoked.
+
+#### **2. Object-level Validation**
+- Implemented using the `validate()` method to access multiple fields of an object in the serializer subclass.
+
+#### **3. Validators**
+- Reusable components for validation across the codebase.
+- Achieved using **validator functions** or **validator classes**.
+
+#### **Validation Priority Order**:
+1. Validators.
+2. Field-level validators.
+3. Object-level validators.
+
+---
+
+### **Model Serializer**
+- Automatically creates fields based on the Django model.
+- Includes `create()` and `update()` methods by default.
+
+---
+
+### **Function-based API Views**
+- By default, only the `GET` method is supported; other methods respond with **405 (Method Not Allowed)**.
+- Use `@api_view` decorator from `rest_framework.decorators` to define function-based views.
+
+---
+
+### **Class-based API Views**
+- DRF provides the `APIView` class, which subclasses Django's `View` class.
+- It allows greater control over request handling.
+
+---
+
+### **Generic Views and Mixins**
+- `GenericAPIView`: Handles built-in model querysets and serializers efficiently.
+- Commonly used **Mixins**:
+  - **ListModelMixin**: Provides a `list()` method for retrieving all model instances.
+  - **CreateModelMixin**: Provides a `create()` method for creating new instances.
+  - **RetrieveModelMixin**: Provides a `retrieve()` method for fetching a specific model instance.
+  - **UpdateModelMixin**: Provides an `update()` method for modifying existing instances.
+  - **DestroyModelMixin**: Provides a `destroy()` method for deleting instances.
+
+---
+
+### **Concrete View Classes**
+1. **ListAPIView**:
+   - Read-only endpoint for representing a collection of model instances.
+   - Provides a `GET` method handler.
+   - Extends `GenericAPIView` and `ListModelMixin`.
+
+2. **CreateAPIView**:
+   - Handles the creation of new instances.
+   - Extends `GenericAPIView` and `CreateModelMixin`.
+
+3. **ListCreateAPIView**:
+   - Combines listing and creation functionality.
+   - Extends `GenericAPIView`, `ListModelMixin`, and `CreateModelMixin`.
+
+---
+
+### **ViewSets in DRF**
+- A **ViewSet** combines different views into a single class.
+- Repeated logic is centralized and simplified.
+- Using **routers**, you can automatically generate URL patterns without manually defining them.
+
+#### **Key Features**:
+- No explicit method handlers like `get` or `post`.
+- Instead, provides actions like `list()`, `retrieve()`, `create()`, `update()`, and `partial_update()`.
+
+---
+
+### **ModelViewSet Class**
+- Inherits from `GenericAPIView` and includes implementations for actions by mixing in behavior from various mixin classes.
+- Actions include:
+  - `list()`
+  - `retrieve()`
+  - `create()`
+  - `update()`
+  - `partial_update()`
+  - `destroy()`
+
+#### **ReadOnlyModelViewSet**:
+- Inherits from `GenericAPIView`.
+- Only provides `list()` and `retrieve()` methods, making it a read-only viewset.
+
+---
+
+### **Attributes Available on ViewSets During Dispatch**
+1. **`basename`**: The base name for URL names created by the router.
+2. **`action`**: The name of the current action (e.g., `list`, `create`).
+3. **`detail`**: Boolean indicating whether the current action is for a list or detail view.
+
+---
+
+### **ModelViewSet Example**
+The `ModelViewSet` is ideal for managing model data and provides ready-to-use actions for CRUD operations.
+
+authentication and authorizations :
+authentication is always run before all the code of view to check authnticity to perform perticular task.
+basic authentication, sssionsauth, token authe,remoteuserauthe,custom authentication.
+
+
+##  Authentication Methods
+
+### Basic Authentication
+- Not suitable for production.
+
+### Session Authentication
+- Uses Django's default session backend for authentication.
+- Appropriate for AJAX clients running in the same session context.
+- On successful authentication:
+  - Provides `request.user` and `request.auth`.
+
+### Token Authentication
+- Include `rest_framework.authtoken` in `INSTALLED_APPS`.
+- On successful authentication:
+  - `request.user` will hold the authenticated user.
+  - `request.auth` will hold an instance of `rest_framework.authtoken.models.Token`.
+- Admins can create tokens via the admin application or provide an API endpoint for users to generate tokens.
+
+### Custom Authentication
+- Implement custom authentication classes to meet specific requirements.
+
+### JWT Authentication
+- Does not require a database to validate tokens, unlike regular token-based authentication.
+
+---
+
+##  Permissions
+
+### Built-in Permissions
+- `AllowAny`
+- `IsAuthenticated`
+- `IsAdminUser`
+- `IsAuthenticatedOrReadOnly`
+- `DjangoModelPermissions`
+- `DjangoModelPermissionsOrAnonReadOnly`
+- `DjangoObjectPermissions`
+
+### Custom Permissions
+- Implement `has_permission` or `has_object_permission` methods to define custom permissions.
+
+---
+
+##  Filters
+
+### Types of Filtering
+- **Custom Filters**: Define custom filtering logic.
+- **Generic Filtering**: Use Django Filter library for advanced filtering.
+- **Search Filters**: Enable search functionality in APIs.
+
+---
+
+##  Pagination
+
+### Types of Pagination
+- **PageNumberPagination**: Provides numbered pages.
+- **CursorPagination**: Provides `next` and `previous` cursors without arbitrary page numbers.
+
